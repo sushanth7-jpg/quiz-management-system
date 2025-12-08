@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { listQuizzes, getQuiz, submitQuiz } from '../api/quizApi';
-import Loader from '../components/Loader';
-import QuestionRenderer from '../components/QuestionRenderer';
-import ResultCard from '../components/ResultCard';
+import React, { useEffect, useState } from "react";
+import { listQuizzes, getQuiz, submitQuiz } from "../api/quizApi";
+import Loader from "../components/Loader";
+import QuestionRenderer from "../components/QuestionRenderer";
+import ResultCard from "../components/ResultCard";
 
 export default function QuizList({ onTake, takeId, onBack }) {
   const [quizzes, setQuizzes] = useState([]);
@@ -26,7 +26,9 @@ export default function QuizList({ onTake, takeId, onBack }) {
       setQuizzes(res);
     } catch (err) {
       console.error(err);
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function openQuiz(id) {
@@ -37,11 +39,17 @@ export default function QuizList({ onTake, takeId, onBack }) {
       setAnswers(new Array(q.questions.length).fill(null));
     } catch (err) {
       console.error(err);
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }
 
   function setAnswer(i, val) {
-    setAnswers(prev => { const copy = [...prev]; copy[i] = val; return copy; });
+    setAnswers((prev) => {
+      const copy = [...prev];
+      copy[i] = val;
+      return copy;
+    });
   }
 
   async function handleSubmit() {
@@ -59,7 +67,14 @@ export default function QuizList({ onTake, takeId, onBack }) {
     if (result) {
       return (
         <div>
-          <button onClick={() => { setResult(null); setActiveQuiz(null); }}>{onBack ? 'Back' : 'Back to list'}</button>
+          <button
+            onClick={() => {
+              setResult(null);
+              setActiveQuiz(null);
+            }}
+          >
+            {onBack ? "Back" : "Back to list"}
+          </button>
           <ResultCard result={result} />
         </div>
       );
@@ -67,10 +82,23 @@ export default function QuizList({ onTake, takeId, onBack }) {
 
     return (
       <div>
-        <button onClick={() => { setActiveQuiz(null); setAnswers([]); }}>{onBack ? onBack : 'Back'}</button>
+        <button
+          onClick={() => {
+            setActiveQuiz(null);
+            setAnswers([]);
+          }}
+        >
+          {onBack ? onBack : "Back"}
+        </button>
         <h3>{activeQuiz.title}</h3>
         {activeQuiz.questions.map((q, i) => (
-          <QuestionRenderer key={i} q={q} index={i} value={answers[i]} onChange={(v) => setAnswer(i, v)} />
+          <QuestionRenderer
+            key={i}
+            q={q}
+            index={i}
+            value={answers[i]}
+            onChange={(v) => setAnswer(i, v)}
+          />
         ))}
         <div style={{ marginTop: 12 }}>
           <button onClick={handleSubmit}>Submit Quiz</button>
@@ -82,11 +110,13 @@ export default function QuizList({ onTake, takeId, onBack }) {
   return (
     <div>
       <h3>Available Quizzes</h3>
-      {quizzes.map(q => (
+      {quizzes.map((q) => (
         <div className="card flex-between" key={q._id}>
           <div>
             <strong>{q.title}</strong>
-            <div className="small">Created: {new Date(q.createdAt).toLocaleString()}</div>
+            <div className="small">
+              Created: {new Date(q.createdAt).toLocaleString()}
+            </div>
           </div>
           <div>
             <button onClick={() => openQuiz(q._id)}>Take Quiz</button>

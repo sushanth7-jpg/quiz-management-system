@@ -1,26 +1,23 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
-
 const quizRoutes = require("./routes/quizzes");
 const adminRoutes = require("./routes/admin");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Vite frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 
-// API routes
 app.use("/api", adminRoutes);
 app.use("/api", quizRoutes);
 
-// Serve React build
-const clientBuildPath = path.join(__dirname, "client/dist");
-app.use(express.static(clientBuildPath));
-
-// Express 5 catch-all (required!)
-app.get(/^(?!\/api).*/, (req, res) => {
-  res.sendFile(path.join(clientBuildPath, "index.html"));
-});
+app.get("/", (req, res) => res.json({ ok: true, message: "Quiz API running" }));
 
 module.exports = app;

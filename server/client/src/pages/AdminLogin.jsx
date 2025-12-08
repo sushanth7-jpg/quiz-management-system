@@ -10,9 +10,14 @@ export default function AdminLogin({ onLogin }) {
     e.preventDefault();
     try {
       const res = await adminLogin(password);
+
+      // Store token in localStorage
       saveToken(res.token);
+
+      // Send token to App.jsx
+      onLogin?.(res.token);
+
       setMsg("Logged in");
-      onLogin?.();
     } catch (err) {
       setMsg(err.message);
     }
@@ -23,6 +28,7 @@ export default function AdminLogin({ onLogin }) {
       <h3>Admin Login</h3>
       <form onSubmit={handleSubmit}>
         <input
+          type="password"
           placeholder="Admin password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

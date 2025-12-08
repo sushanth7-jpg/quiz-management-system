@@ -85,4 +85,59 @@ async function submitQuiz(req, res) {
   res.json(result);
 }
 
-module.exports = { createQuiz, listQuizzes, getQuiz, submitQuiz };
+async function deleteQuiz(req, res) {
+  const { id } = req.params;
+  await Quiz.findByIdAndDelete(id);
+  res.json({ message: "Quiz deleted" });
+}
+
+async function adminGetQuiz(req, res) {
+  const { id } = req.params;
+  const quiz = await Quiz.findById(id).lean();
+
+  if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+  // Return FULL quiz for admin editing
+  res.json(quiz);
+}
+
+async function updateQuiz(req, res) {
+  const { id } = req.params;
+  const payload = req.body;
+
+  const check = validateQuizPayload(payload);
+  if (!check.valid) return res.status(400).json({ message: check.message });
+
+  const updatedQuiz = await Quiz.findByIdAndUpdate(
+    id,
+    {
+      title: payload.title,
+      questions: payload.questions,
+    },
+    { new: true }
+  );
+
+  if (!updatedQuiz) return res.status(404).json({ message: "Quiz not found" });
+
+  res.json(updatedQuiz);
+}
+
+async function getQuizAdmin(req, res) {
+  const { id } = req.params;
+  const quiz = await Quiz.findById(id);
+
+  if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+  res.json(quiz); // return full quiz including correct answers
+}
+
+module.exports = {
+  createQuiz,
+  listQuizzes,
+  getQuiz,
+  adminGetQuiz,
+  updateQuiz,
+  submitQuiz,
+  deleteQuiz,
+  getQuizAdmin,
+};
