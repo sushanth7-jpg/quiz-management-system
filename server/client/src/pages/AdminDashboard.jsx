@@ -67,14 +67,22 @@ export default function AdminDashboard() {
         <div className="flex-between">
           <h3>Admin Dashboard</h3>
           <div>
-            <button className="muted" onClick={() => setView("create")}>
+            <button
+              style={{
+                marginLeft: 8,
+                backgroundColor: "green",
+                color: "white",
+              }}
+              className="muted"
+              onClick={() => setView("create")}
+            >
               Create Quiz
             </button>
             <button style={{ marginLeft: 8 }} onClick={() => setView("list")}>
               My Quizzes
             </button>
             <button
-              style={{ marginLeft: 8 }}
+              style={{ marginLeft: 8, backgroundColor: "red", color: "white" }}
               className="muted"
               onClick={() => {
                 clearToken();
